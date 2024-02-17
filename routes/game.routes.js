@@ -1,0 +1,89 @@
+const express = require("express");
+const router = express.Router();
+const mongoose = require("mongoose");
+
+const Game = require("../models/Game.model");
+
+
+//  POST /games  -  Creates a new game
+router.post("/games", (req, res, next) => {
+  const { title, genre, company, platform, rating, age, description, image, author, comments } = req.body;
+
+  Game.create({ title, genre, company, platform, rating, age, description, image, author, comments })
+    .then((res) => res.json(res))
+    .catch((err) => {
+      console.log("Error while creating the project", err);
+      res.status(500).json({ message: "Error while creating the project" });
+    });
+});
+
+//  GET /games -  Retrieves all games
+router.get("/games", (req, res, next) => {
+  Game.find()
+    .populate("comments")
+    .then((allGames) => res.json(allGames))
+    .catch((err) => {
+      console.log("Error while getting games", err);
+      res.status(500).json({ message: "Error while getting games" });
+    });
+});
+
+//  GET /games/:gameId -  Retrieves a specific game by id
+router.get("/games/:gameId", (req, res, next) => {
+  const { gameId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(gameId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  // Each Game document has `comments` array holding `_id`s of Comment documents
+  // We use .populate() method to get swap the `_id`s for the actual Comment documents
+  Game.findById(gameId)
+    .populate("comments")
+    .then((game) => res.status(200).json(game))
+    .catch((err) => {
+      console.log("Error while retrieving the game", err);
+      res.status(500).json({ message: "Error while retrieving the game" });
+    });
+});
+
+// PUT  /games/:gameId  -  Updates a specific game by id
+router.put("/games/:gameId", (req, res, next) => {
+  const { gameId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(gameId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  Game.findByIdAndUpdate(gameId, req.body, { new: true })
+    .then((updatedGame) => res.json(updatedGame))
+    .catch((err) => {
+      console.log("Error while updating the game", err);
+      res.status(500).json({ message: "Error while updating the game" });
+    });
+});
+
+// DELETE  /games/:gameId  -  Deletes a specific game by id
+router.delete("/games/:gameId", (req, res, next) => {
+  const { gameId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(gameId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  Game.findByIdAndRemove(gameId)
+    .then(() =>
+      res.json({
+        message: `Game with ${gameId} is removed successfully.`,
+      })
+    )
+    .catch((err) => {
+      console.log("Error while deleting the game", err);
+      res.status(500).json({ message: "Error while deleting the game" });
+    });
+});
+
+module.exports = router;
