@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
+const Comment = require ('../models/Comment.model.js')
 
 const gameSchema = new Schema(
   {

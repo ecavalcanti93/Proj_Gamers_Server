@@ -10,10 +10,13 @@ router.post("/games", (req, res, next) => {
   const { title, genre, company, platform, rating, age, description, image, author, comments } = req.body;
 
   Game.create({ title, genre, company, platform, rating, age, description, image, author, comments })
-    .then((res) => res.json(res))
+    .then((newGame) => {
+        return res.json(newGame)
+        // console.log(res)
+    })
     .catch((err) => {
-      console.log("Error while creating the project", err);
-      res.status(500).json({ message: "Error while creating the project" });
+      console.log("Error while creating game", err);
+      res.status(500).json({ message: "Error while creating games" });
     });
 });
 
@@ -74,7 +77,7 @@ router.delete("/games/:gameId", (req, res, next) => {
     return;
   }
 
-  Game.findByIdAndRemove(gameId)
+  Game.findByIdAndDelete(gameId)
     .then(() =>
       res.json({
         message: `Game with ${gameId} is removed successfully.`,
