@@ -5,6 +5,8 @@ require("dotenv").config();
 // ℹ️ Connects to the database
 require("./db");
 
+const { isAuthenticated } = require("./middleware/jwt.middleware");
+
 // Handles http requests (express is node js framework)
 // https://www.npmjs.com/package/express
 const express = require("express");
@@ -19,7 +21,10 @@ const indexRoutes = require("./routes/index.routes");
 app.use("/", indexRoutes);
 
 const gameRoutes = require('./routes/game.routes')
-app.use('/', gameRoutes);
+app.use('/', isAuthenticated, gameRoutes);
+
+const commentsRoutes = require('./routes/comments.routes')
+app.use('/', isAuthenticated, commentsRoutes);
 
 const authRoutes = require('./routes/auth.routes')
 app.use('/', authRoutes);

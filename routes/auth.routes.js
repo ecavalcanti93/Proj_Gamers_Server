@@ -4,7 +4,7 @@ const express = require("express");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
-const { isAuthenticated } = require("./../middleware/jwt.middleware.js");
+const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 const router = express.Router();
 const saltRounds = 10;
@@ -103,7 +103,7 @@ router.post('/login', (req, res, next) => {
         const authToken = jwt.sign(
           payload,
           process.env.TOKEN_SECRET,
-          { algorithm: 'HS256', expiresIn: "1m" }
+          { algorithm: 'HS256', expiresIn: "6h" }
         );
 
         // Send the token as the response
@@ -119,7 +119,7 @@ router.post('/login', (req, res, next) => {
 
 
 
-// GET  /auth/verify  -  Used to verify JWT stored on the client
+// GET  /verify  -  Used to verify JWT stored on the client
 router.get('/verify', isAuthenticated, (req, res, next) => {       // <== CREATE NEW ROUTE
 
   // If JWT token is valid the payload gets decoded by the
