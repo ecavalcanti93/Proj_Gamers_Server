@@ -6,7 +6,7 @@ const Game = require("../models/Game.model");
 
 
 //  POST /games  -  Creates a new game
-router.post("/games", (req, res, next) => {
+router.post("/", (req, res, next) => {
   const { title, genre, company, platform, rating, age, description, image, author, comments } = req.body;
 
   Game.create({ title, genre, company, platform, rating, age, description, image, author, comments })
@@ -21,7 +21,7 @@ router.post("/games", (req, res, next) => {
 });
 
 //  GET /games -  Retrieves all games
-router.get("/games", (req, res, next) => {
+router.get("/", (req, res, next) => {
   Game.find()
     .populate("comments")
     .then((allGames) => res.json(allGames))
@@ -32,7 +32,7 @@ router.get("/games", (req, res, next) => {
 });
 
 //  GET /games/:gameId -  Retrieves a specific game by id
-router.get("/games/:gameId", (req, res, next) => {
+router.get("/:gameId", (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -52,7 +52,7 @@ router.get("/games/:gameId", (req, res, next) => {
 });
 
 // PUT  /games/:gameId  -  Updates a specific game by id
-router.put("/games/:gameId", (req, res, next) => {
+router.put("/:gameId", (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -69,7 +69,7 @@ router.put("/games/:gameId", (req, res, next) => {
 });
 
 // DELETE  /games/:gameId  -  Deletes a specific game by id
-router.delete("/games/:gameId", (req, res, next) => {
+router.delete("/:gameId", (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {

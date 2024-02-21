@@ -21,10 +21,10 @@ const indexRoutes = require("./routes/index.routes");
 app.use("/", indexRoutes);
 
 const gameRoutes = require('./routes/game.routes')
-app.use('/', isAuthenticated, gameRoutes);
+app.use('/games', isAuthenticated, gameRoutes);
 
 const commentsRoutes = require('./routes/comments.routes')
-app.use('/', isAuthenticated, commentsRoutes);
+app.use('/comments', isAuthenticated, commentsRoutes);
 
 const authRoutes = require('./routes/auth.routes')
 app.use('/', authRoutes);

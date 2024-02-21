@@ -6,7 +6,7 @@ const Comment = require("../models/Comment.model");
 const Game = require("../models/Game.model");
 
 //  POST /api/tasks  -  Creates a new task
-router.post("/comments", (req, res, next) => {
+router.post("/", (req, res, next) => {
   const { content, userId } = req.body;
 
   Comment.create({ content, author: userId })
