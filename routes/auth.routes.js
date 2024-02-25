@@ -49,15 +49,15 @@ router.post('/signup', (req, res, next) => {
 
       // Create a new user in the database
       // We return a pending promise, which allows us to chain another `then` 
-      return User.create({ email, password: hashedPassword, username });
+      return User.create({ email, password: hashedPassword, username, userImage });
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
-      const { email, username, _id } = createdUser;
+      const { email, username, userImage, _id } = createdUser;
 
       // Create a new object that doesn't expose the password
-      const user = { email, username, _id };
+      const user = { email, username, userImage, _id };
 
       // Send a json response containing the user object
       res.status(201).json({ user: user });
@@ -94,10 +94,10 @@ router.post('/login', (req, res, next) => {
 
       if (passwordCorrect) {
         // Deconstruct the user object to omit the password
-        const { _id, email, username } = foundUser;
+        const { _id, email, username, userImage } = foundUser;
 
         // Create an object that will be set as the token payload
-        const payload = { _id, email, username };
+        const payload = { _id, email, username, userImage };
 
         // Create and sign the token
         const authToken = jwt.sign(
@@ -129,6 +129,23 @@ router.get('/verify', isAuthenticated, (req, res, next) => {       // <== CREATE
   // Send back the object with user data
   // previously set as the token payload
   res.status(200).json(req.payload);
+});
+
+// PUT  /user/:userId  -  Updates a specific user by id
+router.put("/user/:userId", (req, res, next) => {
+  const { userId } = req.params;
+
+  // if (!mongoose.Types.ObjectId.isValid(userId)) {
+  //   res.status(400).json({ message: "Specified id is not valid" });
+  //   return;
+  // }
+
+  User.findByIdAndUpdate(userId, req.body, { new: true })
+    .then((updatedUser) => res.json(updatedUser))
+    .catch((err) => {
+      console.log("Error while updating the user", err);
+      res.status(500).json({ message: "Error while updating the user" });
+    });
 });
 
 module.exports = router;

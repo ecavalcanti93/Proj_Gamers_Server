@@ -25,7 +25,7 @@ const userSchema = new Schema(
 
     userImage: {
       type: String,
-      default: '/images/default-avatar.jpg',
+      default: '../assets/logo.png',
     },
     games: [{ type: Schema.Types.ObjectId, ref: "Games" }]
   },
