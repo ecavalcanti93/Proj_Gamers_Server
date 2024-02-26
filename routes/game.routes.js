@@ -3,16 +3,43 @@ const router = express.Router();
 const mongoose = require("mongoose");
 
 const Game = require("../models/Game.model");
-
+const User = require("../models/User.model")
 
 //  POST /games  -  Creates a new game
 router.post("/", (req, res, next) => {
-  const { title, genre, company, platform, rating, age, description, image, author, comments } = req.body;
+  const {
+    title,
+    genre,
+    company,
+    platform,
+    rating,
+    age,
+    description,
+    image,
+    comments,
+  } = req.body;
+  const { _id } = req.payload;
+  const game = {
+    title: title,
+    genre: genre,
+    company: company,
+    platform: platform,
+    rating: rating,
+    age: age,
+    description: description,
+    image: image,
+    comments: comments,
+  };
+  game.author = _id;
 
-  Game.create({ title, genre, company, platform, rating, age, description, image, author, comments })
+  Game.create(game)
     .then((newGame) => {
-        return res.json(newGame)
-        // console.log(res)
+      console.log(newGame._id);
+      return User.findByIdAndUpdate(_id, { $push: { games: newGame._id } });
+    })
+    .then((newGameAuthor) => {
+      return res.json(newGameAuthor);
+      // console.log(res)
     })
     .catch((err) => {
       console.log("Error while creating game", err);
