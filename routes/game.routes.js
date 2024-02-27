@@ -34,7 +34,6 @@ router.post("/", (req, res, next) => {
 
   Game.create(game)
     .then((newGame) => {
-      console.log(newGame._id);
       return User.findByIdAndUpdate(_id, { $push: { games: newGame._id } });
     })
     .then((newGameAuthor) => {
