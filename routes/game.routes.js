@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 
 const Game = require("../models/Game.model");
-const User = require("../models/User.model")
+const User = require("../models/User.model");
 
 //  POST /games  -  Creates a new game
 router.post("/", (req, res, next) => {
@@ -49,7 +49,10 @@ router.post("/", (req, res, next) => {
 //  GET /games -  Retrieves all games
 router.get("/", (req, res, next) => {
   Game.find()
-    .populate("comments")
+    .populate({
+      path: "author",
+      select: "username userImage -_id",
+    })
     .then((allGames) => res.json(allGames))
     .catch((err) => {
       console.log("Error while getting games", err);
@@ -69,7 +72,18 @@ router.get("/:gameId", (req, res, next) => {
   // Each Game document has `comments` array holding `_id`s of Comment documents
   // We use .populate() method to get swap the `_id`s for the actual Comment documents
   Game.findById(gameId)
-    .populate("comments")
+    .populate({
+      path: "author",
+      select: "username -_id",
+    })
+    .populate({
+      path: "comments",
+      select: "content -_id",
+      populate: {
+        path: "author",
+        select: "username -_id",
+      },
+    })
     .then((game) => res.status(200).json(game))
     .catch((err) => {
       console.log("Error while retrieving the game", err);
