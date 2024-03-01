@@ -51,7 +51,7 @@ router.get("/", (req, res, next) => {
   Game.find()
     .populate({
       path: "author",
-      select: "username userImage -_id",
+      // select: "username userImage -_id",
     })
     .then((allGames) => res.json(allGames))
     .catch((err) => {
