@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const defaultUserImage = '../assets/logo.png'
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
@@ -25,7 +26,7 @@ const userSchema = new Schema(
 
     userImage: {
       type: String,
-      default: '../assets/logo.png',
+      default: defaultUserImage,
     },
     games: [{ type: Schema.Types.ObjectId, ref: "Games" }]
   },
@@ -34,6 +35,19 @@ const userSchema = new Schema(
     timestamps: true
   }
 );
+
+userSchema.pre('findOneAndUpdate', function(next) {
+
+  this.model.findOne(this.getQuery())
+    .then( modelData => {
+      if (modelData.imageUrl === null) {
+        modelData.imageUrl = defaultUserImage;
+      }
+      modelData.save();
+    })
+  next();
+});
+
 
 const User = model("User", userSchema);
 

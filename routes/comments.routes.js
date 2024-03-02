@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const Comment = require("../models/Comment.model");
 const Game = require("../models/Game.model");
 
-//  POST /api/tasks  -  Creates a new task
+//  POST /games/:gameId/comment  -  Creates a new comment
 router.post("/:gameId/comment", (req, res, next) => {
   const { content } = req.body;
   const { gameId } = req.params;

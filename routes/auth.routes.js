@@ -5,13 +5,14 @@ const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
+const fileUploader = require('../config/cloudinary.config');
 
 const router = express.Router();
 const saltRounds = 10;
 
 // POST /signup  - Creates a new user in the database
-router.post('/signup', (req, res, next) => {
-  const { username, email, password, userImage } = req.body;
+router.post('/signup', fileUploader.single('userImage'), (req, res, next) => {
+  const { username, email, password } = req.body;
 
   // Check if the email or password or name is provided as an empty string 
   if (email === '' || password === '' || username === '') {
@@ -34,18 +35,30 @@ router.post('/signup', (req, res, next) => {
   }
 
 
+
   // Check the users collection if a user with the same email already exists
   User.findOne({ email })
     .then((foundUser) => {
+      // console.log(foundUser);
       // If the user with the same email already exists, send an error response
       if (foundUser) {
         res.status(400).json({ message: "User already exists." });
         return;
       }
+      
 
       // If the email is unique, proceed to hash the password
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
+      
+
+      
+      let userImage = ''
+      if (req.hasOwnProperty('file') ) {
+        userImage = req.file.path;
+       
+      }
+
 
       // Create a new user in the database
       // We return a pending promise, which allows us to chain another `then` 
@@ -58,6 +71,8 @@ router.post('/signup', (req, res, next) => {
 
       // Create a new object that doesn't expose the password
       const user = { email, username, userImage, _id };
+
+
 
       // Send a json response containing the user object
       res.status(201).json({ user: user });
@@ -132,13 +147,17 @@ router.get('/verify', isAuthenticated, (req, res, next) => {       // <== CREATE
 });
 
 // PUT  /user/:userId  -  Updates a specific user by id
-router.put("/user/:userId", (req, res, next) => {
+router.put("/user/:userId", fileUploader.single('userImage'), (req, res, next) => {
   const { userId } = req.params;
 
   // if (!mongoose.Types.ObjectId.isValid(userId)) {
   //   res.status(400).json({ message: "Specified id is not valid" });
   //   return;
   // }
+
+  if (req.hasOwnProperty('file') ) {
+    userId.userImage = req.file.path;
+  }
 
   User.findByIdAndUpdate(userId, req.body, { new: true })
     .then((updatedUser) => res.json(updatedUser))
