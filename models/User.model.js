@@ -28,7 +28,7 @@ const userSchema = new Schema(
       type: String,
       default: defaultUserImage,
     },
-    games: [{ type: Schema.Types.ObjectId, ref: "Games" }]
+    games: [{ type: Schema.Types.ObjectId, ref: "Game" }]
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`    

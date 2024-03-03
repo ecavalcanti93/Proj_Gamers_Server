@@ -5,10 +5,10 @@ const mongoose = require("mongoose");
 const Game = require("../models/Game.model");
 const User = require("../models/User.model");
 
-const fileUploader = require('../config/cloudinary.config');
+const fileUploader = require("../config/cloudinary.config");
 
 //  POST /games  -  Creates a new game
-router.post("/", fileUploader.single('user-image'), (req, res, next) => {
+router.post("/", fileUploader.single("image"), (req, res, next) => {
   const {
     title,
     genre,
@@ -18,7 +18,7 @@ router.post("/", fileUploader.single('user-image'), (req, res, next) => {
     age,
     description,
     image,
-    comments,
+    comments
   } = req.body;
   const { _id } = req.payload;
   const game = {
@@ -34,9 +34,9 @@ router.post("/", fileUploader.single('user-image'), (req, res, next) => {
   };
   game.author = _id;
 
-  if (req.hasOwnProperty('file') ) {
+  if (req.hasOwnProperty("file")) {
     game.image = req.file.path;
-}
+  }
 
   Game.create(game)
     .then((newGame) => {
@@ -58,6 +58,9 @@ router.get("/", (req, res, next) => {
     .populate({
       path: "author",
       // select: "username userImage -_id",
+      populate: {
+        path: "games"
+      },
     })
     .then((allGames) => res.json(allGames))
     .catch((err) => {
@@ -80,14 +83,14 @@ router.get("/:gameId", (req, res, next) => {
   Game.findById(gameId)
     .populate({
       path: "author",
-      select: "username -_id",
+      // select: "username -_id",
     })
     .populate({
       path: "comments",
-      select: "content -_id",
+      // select: "content -_id",
       populate: {
         path: "author",
-        select: "username -_id",
+        // select: "username -_id",
       },
     })
     .then((game) => res.status(200).json(game))
@@ -98,7 +101,7 @@ router.get("/:gameId", (req, res, next) => {
 });
 
 // PUT  /games/:gameId  -  Updates a specific game by id
-router.put("/:gameId", fileUploader.single('user-image'), (req, res, next) => {
+router.put("/:gameId", fileUploader.single("user-image"), (req, res, next) => {
   const { gameId } = req.params;
   console.log(req.body);
 
@@ -107,9 +110,9 @@ router.put("/:gameId", fileUploader.single('user-image'), (req, res, next) => {
     return;
   }
 
-  if (req.hasOwnProperty('file') ) {
+  if (req.hasOwnProperty("file")) {
     game.image = req.file.path;
-}
+  }
 
   Game.findByIdAndUpdate(gameId, req.body, { new: true })
     .then((updatedGame) => res.json(updatedGame))
@@ -123,7 +126,7 @@ router.put("/:gameId", fileUploader.single('user-image'), (req, res, next) => {
 router.delete("/:gameId", (req, res, next) => {
   const { gameId } = req.params;
   const { _id } = req.payload;
-  const canEdit = _id
+  const canEdit = _id;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
     res.status(400).json({ message: "Specified id is not valid" });
@@ -141,36 +144,5 @@ router.delete("/:gameId", (req, res, next) => {
       res.status(500).json({ message: "Error while deleting the game" });
     });
 });
-
-//  GET /games/:gameId -  Retrieves a user games
-router.get("/:userId/myGames", (req, res, next) => {
-  const { gameId } = req.params;
-  const { _id } = req.payload;
-
-  if (!mongoose.Types.ObjectId.isValid(gameId)) {
-    res.status(400).json({ message: "Specified id is not valid" });
-    return;
-  }
-
-  // Each Game document has `comments` array holding `_id`s of Comment documents
-  // We use .populate() method to get swap the `_id`s for the actual Comment documents
-  Game.findById(gameId)
-    .populate({
-      path: "author",
-    })
-    .populate({
-      path: "comments",
-      populate: {
-        path: "author",
-      },
-    })
-    .then((game) => res.status(200).json(game))
-    .catch((err) => {
-      console.log("Error while retrieving the game", err);
-      res.status(500).json({ message: "Error while retrieving the game" });
-    });
-});
-
-
 
 module.exports = router;
