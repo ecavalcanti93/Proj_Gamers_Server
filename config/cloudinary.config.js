@@ -10,11 +10,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET
 });
 
-// esto va en el archivo .env
-// CLOUDINARY_NAME=drgolc0gb
-// CLOUDINARY_KEY=993291894452399
-// CLOUDINARY_SECRET=dKN5xJDMjha96vZL1G3lxCs5oMo
-
 const storage = new CloudinaryStorage({
   // cloudinary: cloudinary,
   cloudinary,
