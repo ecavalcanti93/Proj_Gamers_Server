@@ -35,6 +35,8 @@ const gameSchema = new Schema(
 
     author: { type: Schema.Types.ObjectId, ref: "User" },
 
+    userGames: { type: Schema.Types.ObjectId, ref: "UserGames" },
+
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   },
   {

@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 
 const Game = require("../models/Game.model");
 const User = require("../models/User.model");
+const UserGames = require("../models/UserGames.model");
+
 
 const fileUploader = require("../config/cloudinary.config");
 
@@ -32,29 +34,54 @@ router.post("/", fileUploader.single("image"), (req, res, next) => {
     image: image,
     comments: comments,
   };
-  game.author = _id;
+
+  // game.author = _id;
 
   if (req.hasOwnProperty("file")) {
     game.image = req.file.path;
   }
+  Game.findOne({ title })
+  .then((foundGame) => {
+    // console.log(foundUser);
+    // If the user with the same email already exists, send an error response
+    if (foundGame) {
+      return UserGames.findByIdAndUpdate(foundGame.userGames, { $push: { owners: _id } });
+    }
 
-  Game.create(game)
-    .then((newGame) => {
-      return User.findByIdAndUpdate(_id, { $push: { games: newGame._id } });
-    })
-    .then((newGameAuthor) => {
-      return res.json(newGameAuthor);
-      // console.log(res)
-    })
-    .catch((err) => {
-      console.log("Error while creating game", err);
-      res.status(500).json({ message: "Error while creating games" });
-    });
+    Game.create(game)
+      .then((newGame) => {
+        // console.log(updatedUser);
+        // console.log(_id);
+        const userGame = {
+          gameId: newGame._id,
+          owners: [_id] 
+        }
+        return UserGames.create(userGame);
+      })
+      .then((newUserGame) => {
+        return User.findByIdAndUpdate(_id, { $push: { games: newUserGame.gameId } }, {new: true});
+      })
+      .then((newGameAuthor) => {
+        return res.json(newGameAuthor);
+        // console.log(res)
+      })
+      .catch((err) => {
+        console.log("Error while creating game", err);
+        res.status(500).json({ message: "Error while creating games" });
+      });
+  })
 });
 
 //  GET /games -  Retrieves all games
 router.get("/", (req, res, next) => {
   Game.find()
+    // .populate({
+    //   path: "userGames",
+    //   // select: "username userImage -_id",
+    //   populate: {
+    //     path: "owners"
+    //   },
+
     .populate({
       path: "author",
       // select: "username userImage -_id",
@@ -81,6 +108,13 @@ router.get("/:gameId", (req, res, next) => {
   // Each Game document has `comments` array holding `_id`s of Comment documents
   // We use .populate() method to get swap the `_id`s for the actual Comment documents
   Game.findById(gameId)
+    // .populate({
+    //   path: "userGames",
+    //   // select: "username userImage -_id",
+    //   populate: {
+    //     path: "owners"
+    //   },
+
     .populate({
       path: "author",
       // select: "username -_id",
