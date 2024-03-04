@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 const Comment = require ('../models/Comment.model.js')
+const defaultGameImage = '/src/assets/default-game-image.webp'
 
 const gameSchema = new Schema(
   {
@@ -29,7 +30,7 @@ const gameSchema = new Schema(
 
     image: {
       type: String,
-      default: "/images/default-avatar.jpg",
+      default: defaultGameImage,
     },
 
     author: { type: Schema.Types.ObjectId, ref: "User" },

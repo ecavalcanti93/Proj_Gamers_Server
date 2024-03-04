@@ -51,7 +51,7 @@ router.post("/signup", fileUploader.single("userImage"), (req, res, next) => {
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
 
-      let userImage = "";
+      let userImage = undefined;
       if (req.hasOwnProperty("file")) {
         userImage = req.file.path;
       }
@@ -62,8 +62,7 @@ router.post("/signup", fileUploader.single("userImage"), (req, res, next) => {
         email,
         password: hashedPassword,
         username,
-        userImage,
-        games,
+        userImage
       });
     })
 
