@@ -21,8 +21,8 @@ router.post("/:gameId/comment", (req, res, next) => {
         $push: { comments: newComment._id },
       });
     })
-    .then((res) => {
-      return res.json(res)
+    .then((newCommentUpdated) => {
+      return res.json(newCommentUpdated)
     })
     .catch((err) => {
       console.log("Error while creating the comment", err);
