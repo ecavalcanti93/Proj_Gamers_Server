@@ -30,12 +30,12 @@ router.post("/", fileUploader.single("image"), (req, res, next) => {
     rating: rating,
     age: age,
     description: description,
-    image: image,
+    image: undefined,
     comments: comments,
     userGames: null,
   };
 
-  // game.author = _id;
+  game.author = _id;
 
   if (req.hasOwnProperty("file")) {
     game.image = req.file.path;
@@ -106,7 +106,10 @@ router.get("/", (req, res, next) => {
       // select: "username userImage -_id",
       populate: {
         path: "owners",
-      },
+      }
+    })
+    .populate({
+      path: "author" 
     })
     .then((allGames) => res.json(allGames))
     .catch((err) => {

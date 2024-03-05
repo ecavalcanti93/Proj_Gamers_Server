@@ -33,7 +33,7 @@ const gameSchema = new Schema(
       default: defaultGameImage,
     },
 
-    // author: { type: Schema.Types.ObjectId, ref: "User" },
+    author: { type: Schema.Types.ObjectId, ref: "User" },
 
     userGames: { type: Schema.Types.ObjectId, ref: "UserGames" },
 
