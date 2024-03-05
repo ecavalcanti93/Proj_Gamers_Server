@@ -130,11 +130,10 @@ router.get("/:gameId", (req, res, next) => {
   // Each Game document has `comments` array holding `_id`s of Comment documents
   // We use .populate() method to get swap the `_id`s for the actual Comment documents
   Game.findById(gameId)
-    // .populate({
-    //   path: "author",
-    //   // select: "username -_id",
-    // })
-
+    .populate({
+      path: "author",
+      // select: "username -_id",
+    })
     .populate({
       path: "userGames",
       // select: "username userImage -_id",
