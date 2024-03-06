@@ -106,10 +106,10 @@ router.get("/", (req, res, next) => {
       // select: "username userImage -_id",
       populate: {
         path: "owners",
-      }
+      },
     })
     .populate({
-      path: "author" 
+      path: "author",
     })
     .then((allGames) => res.json(allGames))
     .catch((err) => {
@@ -178,26 +178,63 @@ router.put("/:gameId", fileUploader.single("user-image"), (req, res, next) => {
     });
 });
 
-// DELETE  /games/:gameId  -  Deletes a specific game by id
-router.delete("/:gameId", (req, res, next) => {
+// // DELETE  /games/:gameId  -  Deletes a specific game by id
+// router.delete("/:gameId", (req, res, next) => {
+//   const { gameId } = req.params;
+//   const { _id } = req.payload;
+
+//   if (!mongoose.Types.ObjectId.isValid(gameId)) {
+//     res.status(400).json({ message: "Specified id is not valid" });
+//     return;
+//   }
+
+//   Game.findByIdAndDelete(gameId)
+//     .then(() =>
+//       res.json({
+//         message: `Game with ${gameId} is removed successfully.`,
+//       })
+//     )
+//     .catch((err) => {
+//       console.log("Error while deleting the game", err);
+//       res.status(500).json({ message: "Error while deleting the game" });
+//     });
+// });
+
+// FAKE DELETE  /games/:gameId/delete  -  Deletes a specific game by id from your library
+router.put("/:gameId/delete", (req, res, next) => {
   const { gameId } = req.params;
   const { _id } = req.payload;
-  const canEdit = true;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
     res.status(400).json({ message: "Specified id is not valid" });
     return;
   }
 
-  Game.findByIdAndDelete(gameId)
+  User.findById(_id).then((user) => {
+    user.games.pull(gameId);
+    user.save();
+  });
+
+  Game.findById(gameId)
+    .populate({
+      path: "userGames",
+      // select: "username -_id",
+    })
+    .then((game) => {
+      return game.userGames;
+    })
+    .then((userGames) => {
+      userGames.owners.pull(_id);
+      userGames.save();
+    })
     .then(() =>
       res.json({
         message: `Game with ${gameId} is removed successfully.`,
       })
     )
     .catch((err) => {
-      console.log("Error while deleting the game", err);
-      res.status(500).json({ message: "Error while deleting the game" });
+      console.log("Error while removing the game", err);
+      res.status(500).json({ message: "Error while removing the game" });
     });
 });
 
