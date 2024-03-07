@@ -182,7 +182,7 @@ router.post('/passwordupdate', isAuthenticated, (req, res, next) => {
 router.get("/verify", isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and made available on `req.payload`
-  console.log(`req.payload`, req.payload);
+  // console.log(`req.payload`, req.payload);
 
   // Send back the object with user data
   // previously set as the token payload
@@ -195,7 +195,7 @@ router.put(
   fileUploader.single("userImage"),
   (req, res, next) => {
     const { userId } = req.params;
-    console.log(req.body);
+    // console.log(req.body);
 
     // if (!mongoose.Types.ObjectId.isValid(userId)) {
     //   res.status(400).json({ message: "Specified id is not valid" });

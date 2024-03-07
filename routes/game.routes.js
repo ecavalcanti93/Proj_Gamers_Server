@@ -200,8 +200,8 @@ router.put("/:gameId", fileUploader.single("user-image"), (req, res, next) => {
 //     });
 // });
 
-// FAKE DELETE  /games/:gameId/delete  -  Deletes a specific game by id from your library
-router.put("/:gameId/delete", (req, res, next) => {
+// REMOVE  /games/:gameId/remove  -  Remove a specific game by id from your library
+router.put("/:gameId/remove", (req, res, next) => {
   const { gameId } = req.params;
   const { _id } = req.payload;
 
