@@ -133,7 +133,7 @@ router.post("/login", (req, res, next) => {
 });
 
 // POST /passwordupdate  - Change password
-router.post('/passwordupdate', isAuthenticated, (req, res, next) => {
+router.put('/passwordupdate', isAuthenticated, (req, res, next) => {
 
   const { currentPassword, newPassword, confirmNewPassword } = req.body;
   const { email } = req.payload;
