@@ -46,19 +46,35 @@ router.post("/", fileUploader.single("image"), (req, res, next) => {
 
     if (foundGame) {
       // console.log(foundGame);
-      User.findByIdAndUpdate(
-        _id,
-        { $push: { games: foundGame._id } },
-        { new: true }
-      ).exec();
-      return UserGames.findByIdAndUpdate(
+      UserGames.findByIdAndUpdate(
         foundGame.userGames,
         { $push: { owners: _id } },
+        { new: true }
+      ).exec();
+      return User.findByIdAndUpdate(
+        _id,
+        { $push: { games: foundGame._id } },
         { new: true }
       ).then((updatedUserGames) => {
         return res.json(updatedUserGames);
       });
     }
+
+    // if (foundGame) {
+    //   // console.log(foundGame);
+    //   User.findByIdAndUpdate(
+    //     _id,
+    //     { $push: { games: foundGame._id } },
+    //     { new: true }
+    //   ).exec();
+    //   return UserGames.findByIdAndUpdate(
+    //     foundGame.userGames,
+    //     { $push: { owners: _id } },
+    //     { new: true }
+    //   ).then((updatedUserGames) => {
+    //     return res.json(updatedUserGames);
+    //   });
+    // }
 
     Game.create(game)
       .then((newGame) => {
@@ -201,7 +217,7 @@ router.put("/:gameId", fileUploader.single("user-image"), (req, res, next) => {
 // });
 
 // REMOVE  /games/:gameId/remove  -  Remove a specific game by id from your library
-router.put("/:gameId/remove", (req, res, next) => {
+router.delete("/:gameId", (req, res, next) => {
   const { gameId } = req.params;
   const { _id } = req.payload;
 
