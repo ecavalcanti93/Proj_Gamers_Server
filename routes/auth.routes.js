@@ -195,6 +195,7 @@ router.put(
   fileUploader.single("userImage"),
   (req, res, next) => {
     const { userId } = req.params;
+    const updatedUser = {...req.body}
     // console.log(req.body);
 
     // if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -203,10 +204,10 @@ router.put(
     // }
 
     if (req.hasOwnProperty("file")) {
-      req.body.userImage = req.file.path;
+      updatedUser.userImage = req.file.path;
     }
 
-    User.findByIdAndUpdate(userId, req.body, { new: true })
+    User.findByIdAndUpdate(userId, updatedUser, { new: true })
       .then((updatedUser) => res.json(updatedUser))
       .catch((err) => {
         console.log("Error while updating the user", err);
