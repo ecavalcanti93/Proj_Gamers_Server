@@ -219,7 +219,7 @@ router.post("/:gameId", fileUploader.single("image"), (req, res, next) => {
 //     });
 // });
 
-// REMOVE  /games/:gameId/remove  -  Remove a specific game by id from your library
+// REMOVE  /games/:gameId  -  Remove a specific game by id from your library
 router.delete("/:gameId", (req, res, next) => {
   const { gameId } = req.params;
   const { _id } = req.payload;
