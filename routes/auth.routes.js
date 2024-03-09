@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 const fileUploader = require("../config/cloudinary.config");
+const mongoose = require("mongoose");
+
 
 const router = express.Router();
 const saltRounds = 10;
@@ -187,6 +189,28 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   // Send back the object with user data
   // previously set as the token payload
   res.status(200).json(req.payload);
+});
+
+router.get("/user/:userId", (req, res, next) => {
+  const { userId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  // Each Game document has `comments` array holding `_id`s of Comment documents
+  // We use .populate() method to get swap the `_id`s for the actual Comment documents
+  User.findById(userId)
+    .populate({
+      path: "games",
+      // select: "username -_id",
+    })
+    .then((user) => res.status(200).json(user))
+    .catch((err) => {
+      console.log("Error while retrieving the user", err);
+      res.status(500).json({ message: "Error while retrieving the user" });
+    });
 });
 
 // PUT  /user/:userId  -  Updates a specific user by id
