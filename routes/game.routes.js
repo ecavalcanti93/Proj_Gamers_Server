@@ -173,8 +173,9 @@ router.get("/:gameId", (req, res, next) => {
 });
 
 // PUT  /games/:gameId  -  Updates a specific game by id
-router.put("/:gameId", fileUploader.single("user-image"), (req, res, next) => {
+router.post("/:gameId", fileUploader.single("image"), (req, res, next) => {
   const { gameId } = req.params;
+  const updatedGame = {...req.body}
   // console.log(req.body);
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -183,10 +184,12 @@ router.put("/:gameId", fileUploader.single("user-image"), (req, res, next) => {
   }
 
   if (req.hasOwnProperty("file")) {
-    req.body.image = req.file.path;
+    updatedGame.image = req.file.path;
+    
   }
-
-  Game.findByIdAndUpdate(gameId, req.body, { new: true })
+// console.log(updatedGame);
+//     return
+  Game.findByIdAndUpdate(gameId, updatedGame, { new: true })
     .then((updatedGame) => res.json(updatedGame))
     .catch((err) => {
       console.log("Error while updating the game", err);
