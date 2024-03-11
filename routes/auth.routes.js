@@ -12,7 +12,7 @@ const mongoose = require("mongoose");
 const router = express.Router();
 const saltRounds = 10;
 
-// POST /signup  - Creates a new user in the database///
+// POST /signup  - Creates a new user in the database////
 router.post("/signup", fileUploader.single("userImage"), (req, res, next) => {
   const { username, email, password } = req.body;
 
