@@ -21,7 +21,7 @@ const indexRoutes = require("./routes/index.routes");
 app.use("/", indexRoutes);
 
 const gameRoutes = require('./routes/game.routes')
-app.use('/games', isAuthenticated, gameRoutes);
+app.use('/games', gameRoutes);
 
 const commentsRoutes = require('./routes/comments.routes')
 app.use('/games', isAuthenticated, commentsRoutes);

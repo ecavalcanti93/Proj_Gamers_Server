@@ -7,9 +7,10 @@ const User = require("../models/User.model");
 const UserGames = require("../models/UserGames.model");
 
 const fileUploader = require("../config/cloudinary.config");
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 //  POST /games  -  Creates a new game
-router.post("/", fileUploader.single("image"), (req, res, next) => {
+router.post("/", isAuthenticated, fileUploader.single("image"), (req, res, next) => {
   const {
     title,
     genre,
@@ -135,7 +136,7 @@ router.get("/", (req, res, next) => {
 });
 
 //  GET /games/:gameId -  Retrieves a specific game by id
-router.get("/:gameId", (req, res, next) => {
+router.get("/:gameId", isAuthenticated, (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -173,7 +174,7 @@ router.get("/:gameId", (req, res, next) => {
 });
 
 // PUT  /games/:gameId  -  Updates a specific game by id
-router.post("/:gameId", fileUploader.single("image"), (req, res, next) => {
+router.post("/:gameId", isAuthenticated, fileUploader.single("image"), (req, res, next) => {
   const { gameId } = req.params;
   const updatedGame = {...req.body}
   // console.log(req.body);
@@ -198,7 +199,7 @@ router.post("/:gameId", fileUploader.single("image"), (req, res, next) => {
 });
 
 // // DELETE  /games/:gameId  -  Deletes a specific game by id
-// router.delete("/:gameId", (req, res, next) => {
+// router.delete("/:gameId", isAuthenticated, (req, res, next) => {
 //   const { gameId } = req.params;
 //   const { _id } = req.payload;
 
@@ -220,7 +221,7 @@ router.post("/:gameId", fileUploader.single("image"), (req, res, next) => {
 // });
 
 // REMOVE  /games/:gameId  -  Remove a specific game by id from your library
-router.delete("/:gameId", (req, res, next) => {
+router.delete("/:gameId", isAuthenticated, (req, res, next) => {
   const { gameId } = req.params;
   const { _id } = req.payload;
 

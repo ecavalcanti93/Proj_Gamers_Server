@@ -40,7 +40,7 @@ router.post("/signup", fileUploader.single("userImage"), (req, res, next) => {
   }
 
   // Check the users collection if a user with the same email already exists
-  User.findOne({ email })
+  User.findOne({ username })
     .then((foundUser) => {
       // console.log(foundUser);
       // If the user with the same email already exists, send an error response
