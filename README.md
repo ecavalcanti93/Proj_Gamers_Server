@@ -1,5 +1,5 @@
 <h1 align="center" id="title">Project IronHack - GamersBin</h1>
-
+<img src="./public/images/logo_horizontal.png" width="200" height="auto" align="center" />
 <p id="description">Created to be a virtual library of games GamersBin is a project designed to help gamers remember the games they've played and that have left a mark on their lives.</p>
 
 <h2>🚀 Demo</h2>
@@ -8,10 +8,10 @@
 
 <h2>Project Screenshots:</h2>
 
-<img src="./src/assets/HomePage.png" width="800" height="384/">
+<img src="./public/images/HomePage2.png" width="850" height="609/">
 
-<h2>🛠️ Created by:</h2>
-<p><a href="https://www.linkedin.com/in/ecavalcanti93/" target="_blank"> Eric Cavalcanti</a> and Marcel</p>
+<h2>🔰 Created by:</h2>
+<p><a href="https://github.com/ecavalcanti93" target="_blank"> Eric Cavalcanti</a> and <a href="https://github.com/MarcelCostaFerre" target="_blank">Marcel Costa</a></p>
 
 <h2>🛠️ Installation Steps:</h2>
 
@@ -33,7 +33,7 @@ npm install
 npm run dev
 ```
 
-  <!-- test -->
+  
   
 <h2>💻 Built with</h2>
 
