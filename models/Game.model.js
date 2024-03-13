@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 const Comment = require ('../models/Comment.model.js')
-const defaultGameImage = '/src/public/default-game-image.webp'
+const defaultGameImage = 'https://res.cloudinary.com/drgolc0gb/image/upload/v1710345439/Proj_Gamers/i600rsj5rphab5vjjwcg.jpg'
+// const defaultGameImage = '/src/assets/default-game-image.webp'
 
 const gameSchema = new Schema(
   {

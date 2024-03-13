@@ -1,5 +1,6 @@
 const { Schema, model } = require("mongoose");
-const defaultUserImage = '/src/public/logo.png'
+// const defaultUserImage = '/src/assets/logo.png'
+const defaultUserImage = 'https://res.cloudinary.com/drgolc0gb/image/upload/v1710345943/Proj_Gamers/j90o7xjjalpkch2dz3ye.png'
 // const defaultUserImage = '/src/static/images/logo.png'
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
