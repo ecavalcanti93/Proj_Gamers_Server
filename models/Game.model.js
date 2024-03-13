@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 const Comment = require ('../models/Comment.model.js')
-const defaultGameImage = '/src/assets/default-game-image.jpg'
+// const defaultGameImage = '/src/assets/default-game-image.jpg'
+const defaultGameImage = '../public/images/default-game-image.jpg'
 
 const gameSchema = new Schema(
   {
