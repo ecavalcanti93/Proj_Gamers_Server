@@ -42,9 +42,6 @@ router.post("/", isAuthenticated, fileUploader.single("image"), (req, res, next)
     game.image = req.file.path;
   }
   Game.findOne({ title }).then((foundGame) => {
-    // console.log(foundUser);
-    // If the user with the same email already exists, send an error response
-
     if (foundGame) {
       // console.log(foundGame);
       UserGames.findByIdAndUpdate(
@@ -60,22 +57,6 @@ router.post("/", isAuthenticated, fileUploader.single("image"), (req, res, next)
         return res.json(updatedUserGames);
       });
     }
-
-    // if (foundGame) {
-    //   // console.log(foundGame);
-    //   User.findByIdAndUpdate(
-    //     _id,
-    //     { $push: { games: foundGame._id } },
-    //     { new: true }
-    //   ).exec();
-    //   return UserGames.findByIdAndUpdate(
-    //     foundGame.userGames,
-    //     { $push: { owners: _id } },
-    //     { new: true }
-    //   ).then((updatedUserGames) => {
-    //     return res.json(updatedUserGames);
-    //   });
-    // }
 
     Game.create(game)
       .then((newGame) => {
@@ -110,17 +91,8 @@ router.post("/", isAuthenticated, fileUploader.single("image"), (req, res, next)
 //  GET /games -  Retrieves all games
 router.get("/", (req, res, next) => {
   Game.find()
-    // .populate({
-    //   path: "author",
-    //   // select: "username userImage -_id",
-    //   populate: {
-    //     path: "games",
-    //   },
-    // })
-
     .populate({
       path: "userGames",
-      // select: "username userImage -_id",
       populate: {
         path: "owners",
       },
@@ -149,21 +121,17 @@ router.get("/:gameId", isAuthenticated, (req, res, next) => {
   Game.findById(gameId)
     .populate({
       path: "author",
-      // select: "username -_id",
     })
     .populate({
       path: "userGames",
-      // select: "username userImage -_id",
       populate: {
         path: "owners",
       },
     })
     .populate({
       path: "comments",
-      // select: "content -_id",
       populate: {
         path: "author",
-        // select: "username -_id",
       },
     })
     .then((game) => res.status(200).json(game))
@@ -188,8 +156,7 @@ router.post("/:gameId", isAuthenticated, fileUploader.single("image"), (req, res
     updatedGame.image = req.file.path;
     
   }
-// console.log(updatedGame);
-//     return
+
   Game.findByIdAndUpdate(gameId, updatedGame, { new: true })
     .then((updatedGame) => res.json(updatedGame))
     .catch((err) => {
