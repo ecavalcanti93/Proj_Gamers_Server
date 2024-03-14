@@ -42,11 +42,8 @@ router.post("/", isAuthenticated, fileUploader.single("image"), (req, res, next)
     game.image = req.file.path;
   }
   Game.findOne({ title }).then((foundGame) => {
-<<<<<<< HEAD
-=======
     // If the user with the same email already exists, send an error response
 
->>>>>>> df57b764a0a5478914157e1333efa30498f5bbba
     if (foundGame) {
       UserGames.findByIdAndUpdate(
         foundGame.userGames,
@@ -95,10 +92,6 @@ router.post("/", isAuthenticated, fileUploader.single("image"), (req, res, next)
 //  GET /games -  Retrieves all games
 router.get("/", (req, res, next) => {
   Game.find()
-<<<<<<< HEAD
-=======
-
->>>>>>> df57b764a0a5478914157e1333efa30498f5bbba
     .populate({
       path: "userGames",
       populate: {
@@ -163,10 +156,6 @@ router.post("/:gameId", isAuthenticated, fileUploader.single("image"), (req, res
     updatedGame.image = req.file.path;
     
   }
-<<<<<<< HEAD
-
-=======
->>>>>>> df57b764a0a5478914157e1333efa30498f5bbba
   Game.findByIdAndUpdate(gameId, updatedGame, { new: true })
     .then((updatedGame) => res.json(updatedGame))
     .catch((err) => {
