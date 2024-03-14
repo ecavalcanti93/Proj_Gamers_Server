@@ -42,11 +42,9 @@ router.post("/", isAuthenticated, fileUploader.single("image"), (req, res, next)
     game.image = req.file.path;
   }
   Game.findOne({ title }).then((foundGame) => {
-    // console.log(foundUser);
     // If the user with the same email already exists, send an error response
 
     if (foundGame) {
-      // console.log(foundGame);
       UserGames.findByIdAndUpdate(
         foundGame.userGames,
         { $push: { owners: _id } },
@@ -60,22 +58,6 @@ router.post("/", isAuthenticated, fileUploader.single("image"), (req, res, next)
         return res.json(updatedUserGames);
       });
     }
-
-    // if (foundGame) {
-    //   // console.log(foundGame);
-    //   User.findByIdAndUpdate(
-    //     _id,
-    //     { $push: { games: foundGame._id } },
-    //     { new: true }
-    //   ).exec();
-    //   return UserGames.findByIdAndUpdate(
-    //     foundGame.userGames,
-    //     { $push: { owners: _id } },
-    //     { new: true }
-    //   ).then((updatedUserGames) => {
-    //     return res.json(updatedUserGames);
-    //   });
-    // }
 
     Game.create(game)
       .then((newGame) => {
@@ -110,17 +92,9 @@ router.post("/", isAuthenticated, fileUploader.single("image"), (req, res, next)
 //  GET /games -  Retrieves all games
 router.get("/", (req, res, next) => {
   Game.find()
-    // .populate({
-    //   path: "author",
-    //   // select: "username userImage -_id",
-    //   populate: {
-    //     path: "games",
-    //   },
-    // })
 
     .populate({
       path: "userGames",
-      // select: "username userImage -_id",
       populate: {
         path: "owners",
       },
@@ -149,21 +123,17 @@ router.get("/:gameId", isAuthenticated, (req, res, next) => {
   Game.findById(gameId)
     .populate({
       path: "author",
-      // select: "username -_id",
     })
     .populate({
       path: "userGames",
-      // select: "username userImage -_id",
       populate: {
         path: "owners",
       },
     })
     .populate({
       path: "comments",
-      // select: "content -_id",
       populate: {
         path: "author",
-        // select: "username -_id",
       },
     })
     .then((game) => res.status(200).json(game))
@@ -177,7 +147,6 @@ router.get("/:gameId", isAuthenticated, (req, res, next) => {
 router.post("/:gameId", isAuthenticated, fileUploader.single("image"), (req, res, next) => {
   const { gameId } = req.params;
   const updatedGame = {...req.body}
-  // console.log(req.body);
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
     res.status(400).json({ message: "Specified id is not valid" });
@@ -188,8 +157,6 @@ router.post("/:gameId", isAuthenticated, fileUploader.single("image"), (req, res
     updatedGame.image = req.file.path;
     
   }
-// console.log(updatedGame);
-//     return
   Game.findByIdAndUpdate(gameId, updatedGame, { new: true })
     .then((updatedGame) => res.json(updatedGame))
     .catch((err) => {
@@ -198,27 +165,6 @@ router.post("/:gameId", isAuthenticated, fileUploader.single("image"), (req, res
     });
 });
 
-// // DELETE  /games/:gameId  -  Deletes a specific game by id
-// router.delete("/:gameId", isAuthenticated, (req, res, next) => {
-//   const { gameId } = req.params;
-//   const { _id } = req.payload;
-
-//   if (!mongoose.Types.ObjectId.isValid(gameId)) {
-//     res.status(400).json({ message: "Specified id is not valid" });
-//     return;
-//   }
-
-//   Game.findByIdAndDelete(gameId)
-//     .then(() =>
-//       res.json({
-//         message: `Game with ${gameId} is removed successfully.`,
-//       })
-//     )
-//     .catch((err) => {
-//       console.log("Error while deleting the game", err);
-//       res.status(500).json({ message: "Error while deleting the game" });
-//     });
-// });
 
 // REMOVE  /games/:gameId  -  Remove a specific game by id from your library
 router.delete("/:gameId", isAuthenticated, (req, res, next) => {
@@ -238,7 +184,6 @@ router.delete("/:gameId", isAuthenticated, (req, res, next) => {
   Game.findById(gameId)
     .populate({
       path: "userGames",
-      // select: "username -_id",
     })
     .then((game) => {
       return game.userGames;

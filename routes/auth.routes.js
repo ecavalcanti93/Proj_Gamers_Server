@@ -42,7 +42,6 @@ router.post("/signup", fileUploader.single("userImage"), (req, res, next) => {
   // Check the users collection if a user with the same email already exists
   User.findOne({ username })
     .then((foundUser) => {
-      // console.log(foundUser);
       // If the user with the same email already exists, send an error response
       if (foundUser) {
         res.status(400).json({ message: "User already exists." });
@@ -99,7 +98,6 @@ router.post("/login", (req, res, next) => {
   User.findOne({ username })
     .populate({
       path: "games",
-      // select: "username -_id",
     })
 
     .then((foundUser) => {
@@ -184,7 +182,6 @@ router.post('/passwordupdate', isAuthenticated, (req, res, next) => {
 router.get("/verify", isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and made available on `req.payload`
-  // console.log(`req.payload`, req.payload);
 
   // Send back the object with user data
   // previously set as the token payload
@@ -204,7 +201,6 @@ router.get("/user/:userId", (req, res, next) => {
   User.findById(userId)
     .populate({
       path: "games",
-      // select: "username -_id",
     })
     .then((user) => res.status(200).json(user))
     .catch((err) => {
@@ -220,12 +216,6 @@ router.put(
   (req, res, next) => {
     const { userId } = req.params;
     const updatedUser = {...req.body}
-    // console.log(req.body);
-
-    // if (!mongoose.Types.ObjectId.isValid(userId)) {
-    //   res.status(400).json({ message: "Specified id is not valid" });
-    //   return;
-    // }
 
     if (req.hasOwnProperty("file")) {
       updatedUser.userImage = req.file.path;
