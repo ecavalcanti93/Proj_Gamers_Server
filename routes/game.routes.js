@@ -92,7 +92,6 @@ router.post("/", isAuthenticated, fileUploader.single("image"), (req, res, next)
 //  GET /games -  Retrieves all games
 router.get("/", (req, res, next) => {
   Game.find()
-
     .populate({
       path: "userGames",
       populate: {
